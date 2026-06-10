@@ -4,6 +4,10 @@ import { filterTopic } from "../guardrails/topicFilter.js";
 import { injectDisclaimer } from "../guardrails/disclaimerInjector.js";
 import { checkEscalation } from "../guardrails/escalationTrigger.js";
 import { checkGrounding } from "../guardrails/groundingCheck.js";
+import {
+  runInputGuardrails,
+  runOutputGuardrails,
+} from "../guardrails/pipeline.js";
 
 const results = retrieve("what are the interest rated for a fixed mortgage");
 console.log(JSON.stringify(results, null, 2));
@@ -62,3 +66,30 @@ console.log(
     chunks,
   ),
 );
+
+const userMessage = "My SIN is 123-456-789. What are the fixed mortgage rates?";
+
+const chunksPipelineTest = [
+  {
+    sectionTitle: "Fixed Rate Mortgages",
+    content:
+      "Fixed rate mortgages are available in 1, 2, 3, 5, and 10 year terms. The current 5-year fixed rate is 5.49%.",
+  },
+];
+
+const llmResponse =
+  "The current 5-year fixed rate is 5.49%, available in terms from 1 to 10 years.";
+
+// Test input guardrails
+const inputResult = runInputGuardrails(userMessage);
+console.log("INPUT GUARDRAILS:");
+console.log(JSON.stringify(inputResult, null, 2));
+
+// Test output guardrails
+const outputResult = runOutputGuardrails(
+  userMessage,
+  llmResponse,
+  chunksPipelineTest,
+);
+console.log("\nOUTPUT GUARDRAILS:");
+console.log(JSON.stringify(outputResult, null, 2));

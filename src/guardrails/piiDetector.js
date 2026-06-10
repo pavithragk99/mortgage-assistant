@@ -28,7 +28,7 @@ export function detectPII(text) {
     }
   }
 
-  const hasPII = detectedTypes.length > 0;
+  const containsPII = detectedTypes.length > 0;
 
   // Sanitize and replace PII with placeholders
   let sanitized = text;
@@ -38,7 +38,7 @@ export function detectPII(text) {
   }
 
   return {
-    hasPII,
+    containsPII,
     detectedTypes,
     sanitized,
   };
